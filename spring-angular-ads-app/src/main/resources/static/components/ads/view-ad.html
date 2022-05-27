@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>View Ad</title>
+    <meta name="theme-color" content="#ee8d32"/>
+    <link rel="manifest" href="../../manifest.json"/>
+    <link rel="apple-touch-icon" href="../../icons/ios/100.png"/>
+    <link rel="shortcut icon" href="../../icons/ios/100.png"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+</head>
+<body>
+<!--Navbar-->
+<div id="navbar"></div>
+<!-- Navbar -->
+
+<div id="ad-view" class="container">
+    <div class="row">
+        <div
+                id="carousel-example-generic"
+                class="carousel slide double-column"
+                style="width: 600px; height: 400px"
+                data-ride="carousel"
+        >
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox"></div>
+
+            <!-- Controls -->
+            <div id="carousel-controls">
+                <a
+                        class="left carousel-control"
+                        href="#carousel-example-generic"
+                        role="button"
+                        data-slide="prev"
+                >
+              <span
+                      class="glyphicon glyphicon-chevron-left"
+                      aria-hidden="true"
+              ></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a
+                        class="right carousel-control"
+                        href="#carousel-example-generic"
+                        role="button"
+                        data-slide="next"
+                >
+              <span
+                      class="glyphicon glyphicon-chevron-right"
+                      aria-hidden="true"
+              ></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+        <div class="column">
+            <div id="ad-data" style="margin: 10px">
+                <div
+                        id="owner-actions"
+                        style="display: flex; justify-content: flex-end"
+                >
+                    <button
+                            onclick="toggleEdit()"
+                            type="button"
+                            class="btn btn-default btn-sm btn-warning"
+                    >
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+                    <button
+                            onclick="deleteAd()"
+                            type="button"
+                            class="btn btn-default btn-sm btn-danger"
+                    >
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                </div>
+            </div>
+            <div
+                    id="ad-message-panel"
+                    style="margin: 10px"
+                    class="list-group-item"
+            >
+                <div id="message-form" class="form-horizontal">
+                    <div class="form-group" style="margin: 5px">
+                        <label for="message-text">Contact</label>
+                        <textarea
+                                class="form-control"
+                                id="message-text"
+                                rows="3"
+                        ></textarea>
+                    </div>
+                    <div
+                            class="form-group"
+                            style="display: flex; justify-items: flex-start"
+                    >
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button onclick="sendMessage()" class="btn btn-default">
+                                Send Message
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ad-edit" class="container">
+    <h2>Update Ad</h2>
+    <!-- Form Basic Ad-->
+    <div id="basic-ad-form" class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="title">Title:</label>
+            <div class="col-sm-10">
+                <input
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        placeholder="Enter title"
+                        name="title"
+                />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="description"
+            >Description:</label
+            >
+            <div class="col-sm-10">
+                <input
+                        type="text"
+                        class="form-control"
+                        id="description"
+                        placeholder="Enter description"
+                        name="description"
+                />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="basic_img_arr"
+            >Image(s):</label
+            >
+            <div class="col-sm-10">
+                <input
+                        id="basic_img_arr"
+                        type="file"
+                        class="form-control"
+                        name="files[]"
+                        accept="image/*"
+                        multiple
+                />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button onclick="cancelUpdate()" class="btn btn-default">
+                    Cancel
+                </button>
+            </div>
+            <div class="col-sm-offset-2 col-sm-10">
+                <button onclick="updateBasicAd()" class="btn btn-default">
+                    Update
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--Form Basic Ad-->
+    <!-- Form Car Ad-->
+    <div id="car-ad-form" class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="maker">Maker:</label>
+            <div class="col-sm-10">
+                <input
+                        type="text"
+                        class="form-control"
+                        id="maker"
+                        placeholder="Enter maker"
+                        name="maker"
+                />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="model">Model:</label>
+            <div class="col-sm-10">
+                <input
+                        type="text"
+                        class="form-control"
+                        id="model"
+                        placeholder="Enter model"
+                        name="model"
+                />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="maker">Year:</label>
+            <div class="col-sm-10">
+                <input
+                        type="number"
+                        class="form-control"
+                        id="year"
+                        placeholder="Enter year"
+                        name="year"
+                />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="car_img_arr"
+            >Image(s):</label
+            >
+            <div class="col-sm-10">
+                <input
+                        id="car_img_arr"
+                        type="file"
+                        class="form-control"
+                        name="files[]"
+                        accept="image/*"
+                        multiple
+                />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button onclick="cancelUpdate()" class="btn btn-default">
+                    Cancel
+                </button>
+            </div>
+            <div class="col-sm-offset-2 col-sm-10">
+                <button onclick="updatedCarAd()" class="btn btn-default">
+                    Update
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--Form Car Ad-->
+</div>
+
+<div class="footer">
+    <footer class="footer-32892 pb-0">
+        <div class="site-section">
+            <div class="container">
+                <div class="row">
+                    <div
+                            class="column col-md pr-md-5 mb-4 mb-md-0"
+                            style="padding: 10px"
+                    >
+                        <h3>About Us</h3>
+                        <p class="mb-4">
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                            Laboriosam itaque unde facere repellendus, odio et iste
+                            voluptatum aspernatur ratione mollitia tempora eligendi maxime
+                            est, blanditiis accusamus. Incidunt, aut, quis!
+                        </p>
+                        <ul class="list-unstyled quick-info mb-4">
+                            <li>
+                                <a href="#" class="d-flex align-items-center"
+                                ><span class="icon mr-3 icon-phone"></span> +1 291 3912
+                                    329</a
+                                >
+                            </li>
+                            <li>
+                                <a href="#" class="d-flex align-items-center"
+                                ><span class="icon mr-3 icon-envelope"></span>
+                                    info@gmail.com</a
+                                >
+                            </li>
+                        </ul>
+
+                        <form action="#" class="subscribe">
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Enter your e-mail"
+                            />
+                            <input type="submit" class="btn btn-submit" value="Send"/>
+                        </form>
+                    </div>
+
+                    <div class="column col-12" style="padding: 10px">
+                        <div class="py-5 footer-menu-wrap d-md-flex align-items-center">
+                            <ul class="list-unstyled footer-menu mr-auto">
+                                <li><a href="#">Home</a></li>
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Our works</a></li>
+                                <li><a href="#">Services</a></li>
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">Contacts</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="view-ad.js"></script>
+</body>
+</html>
