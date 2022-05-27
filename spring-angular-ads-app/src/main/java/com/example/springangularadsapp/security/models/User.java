@@ -36,8 +36,7 @@ public class User {
     @NotBlank
     @Size(max = 120)
     private String password;
-
-    private String firebaseToken;
+    
 
     @DBRef
     private Set<Role> roles = new HashSet<>();
