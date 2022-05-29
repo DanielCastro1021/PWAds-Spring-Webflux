@@ -1,4 +1,4 @@
-package com.example.reactivepwads.domain.messages.model;
+package com.example.reactivepwads.reactive.messages.model;
 
 import lombok.Data;
 import lombok.Getter;

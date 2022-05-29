@@ -1,6 +1,6 @@
-package com.example.reactivepwads.domain.ads.model.car_ad;
+package com.example.reactivepwads.reactive.ads.model.car_ad;
 
-import com.example.reactivepwads.domain.ads.model.ad.AdDto;
+import com.example.reactivepwads.reactive.ads.model.ad.AdDto;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;

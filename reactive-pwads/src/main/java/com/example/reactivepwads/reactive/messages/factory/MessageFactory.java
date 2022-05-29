@@ -1,7 +1,7 @@
-package com.example.reactivepwads.domain.messages.factory;
+package com.example.reactivepwads.reactive.messages.factory;
 
-import com.example.reactivepwads.domain.messages.model.Message;
-import com.example.reactivepwads.domain.messages.model.MessageDto;
+import com.example.reactivepwads.reactive.messages.model.Message;
+import com.example.reactivepwads.reactive.messages.model.MessageDto;
 import org.springframework.stereotype.Component;
 
 @Component

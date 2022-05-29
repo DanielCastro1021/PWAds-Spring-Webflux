@@ -1,48 +1,37 @@
 package com.example.reactivepwads.reactive.ads.service;
 
-import com.example.reactivepwads.domain.ads.model.basic_ad.BasicAd;
-import com.example.reactivepwads.domain.ads.model.basic_ad.BasicAdDto;
+import com.example.reactivepwads.reactive.ads.mapper.AdMapper;
+import com.example.reactivepwads.reactive.ads.model.ad.Ad;
+import com.example.reactivepwads.reactive.ads.model.ad.AdDto;
+import com.example.reactivepwads.reactive.ads.model.basic_ad.BasicAd;
 import com.example.reactivepwads.reactive.ads.repository.ReactiveAdRepository;
-import com.example.reactivepwads.reactive.ads.util.AdWebfluxService;
-import com.example.reactivepwads.reactive.users.repository.ReactiveUserRepository;
+import com.example.reactivepwads.security.repository.ReactiveUserRepository;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class BasicAdService extends AdWebfluxService<BasicAd, BasicAdDto> {
-    public BasicAdService(ReactiveAdRepository<BasicAd> repository, ReactiveUserRepository userRepository) {
-        super(repository, userRepository);
-    }
-
-
-    @Override
-    public Flux<BasicAd> myAds() {
-        return null;
+public class BasicAdService extends AdService {
+    public BasicAdService(ReactiveAdRepository<Ad> repository, ReactiveUserRepository userRepository, AdMapper adMapper) {
+        super(repository, userRepository, adMapper);
     }
 
     @Override
-    public Flux<BasicAd> findAll() {
-        return null;
+    public Mono<Ad> save(AdDto entity) {
+        return super.getAdMapper().basicAdDtoToBasicAd(entity)
+                .flatMap(basicAd -> super.getRepository().save(basicAd).map(ad -> (Ad) ad))
+                .switchIfEmpty(Mono.error(new Exception("Could not save Ad: " + entity)));
     }
 
     @Override
-    public Mono<BasicAd> findById(String id) {
-        return null;
-    }
-
-    @Override
-    public Mono<BasicAd> save(BasicAdDto entity) {
-        return null;
-    }
-
-    @Override
-    public Mono<BasicAd> update(BasicAdDto entity, String id) {
-        return null;
-    }
-
-    @Override
-    public Mono<BasicAd> delete(String id) {
-        return null;
+    public Mono<Ad> update(AdDto entity, String id) {
+        return super.getRepository().findById(id)
+                .flatMap(ad -> super.getAdMapper().basicAdDtoToBasicAd(entity).flatMap(newBasicAd -> {
+                    BasicAd updatedAd = (BasicAd) ad;
+                    updatedAd.setDescription(newBasicAd.getDescription());
+                    updatedAd.setTitle(newBasicAd.getTitle());
+                    updatedAd.setImageList(newBasicAd.getImageList());
+                    return super.getRepository().save(updatedAd);
+                }).map(basicAd -> (Ad) basicAd))
+                .switchIfEmpty(Mono.error(new Exception("Could not be update Ad: " + entity)));
     }
 }

@@ -1,14 +1,7 @@
 package com.example.reactivepwads.security.service;
 
-import com.example.reactivepwads.reactive.users.repository.ReactiveUserRepository;
-import com.example.reactivepwads.security.model.Role;
+import com.example.reactivepwads.security.repository.ReactiveUserRepository;
 import com.example.reactivepwads.security.model.User;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

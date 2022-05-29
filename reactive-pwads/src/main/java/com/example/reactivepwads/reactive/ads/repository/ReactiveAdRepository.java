@@ -1,6 +1,6 @@
 package com.example.reactivepwads.reactive.ads.repository;
 
-import com.example.reactivepwads.domain.ads.model.ad.Ad;
+import com.example.reactivepwads.reactive.ads.model.ad.Ad;
 
 
 import com.example.reactivepwads.security.model.User;

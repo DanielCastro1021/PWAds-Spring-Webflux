@@ -1,47 +1,43 @@
 package com.example.reactivepwads.reactive.ads.service;
 
-import com.example.reactivepwads.domain.ads.model.car_ad.CarAd;
-import com.example.reactivepwads.domain.ads.model.car_ad.CarAdDto;
+import com.example.reactivepwads.reactive.ads.mapper.AdMapper;
+import com.example.reactivepwads.reactive.ads.model.ad.Ad;
+import com.example.reactivepwads.reactive.ads.model.ad.AdDto;
+import com.example.reactivepwads.reactive.ads.model.basic_ad.BasicAd;
+import com.example.reactivepwads.reactive.ads.model.car_ad.CarAd;
+import com.example.reactivepwads.reactive.ads.model.car_ad.CarAdDto;
 import com.example.reactivepwads.reactive.ads.repository.ReactiveAdRepository;
 import com.example.reactivepwads.reactive.ads.util.AdWebfluxService;
-import com.example.reactivepwads.reactive.users.repository.ReactiveUserRepository;
+import com.example.reactivepwads.security.repository.ReactiveUserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class CarAdService extends AdWebfluxService<CarAd, CarAdDto> {
-    public CarAdService(ReactiveAdRepository<CarAd> repository, ReactiveUserRepository userRepository) {
-        super(repository, userRepository);
+public class CarAdService extends AdService {
+    public CarAdService(ReactiveAdRepository<Ad> repository, ReactiveUserRepository userRepository, AdMapper adMapper) {
+        super(repository, userRepository, adMapper);
     }
 
     @Override
-    public Flux<CarAd> myAds() {
-        return null;
+    public Mono<Ad> save(AdDto entity) {
+        return super.getAdMapper().carAdDtoToCarAd(entity)
+                .flatMap(carAd -> super.getRepository().save(carAd).map(ad -> (Ad) ad))
+                .switchIfEmpty(Mono.error(new Exception("Could not save Ad: " + entity)));
     }
 
     @Override
-    public Flux<CarAd> findAll() {
-        return null;
-    }
-
-    @Override
-    public Mono<CarAd> findById(String id) {
-        return null;
-    }
-
-    @Override
-    public Mono<CarAd> save(CarAdDto entity) {
-        return null;
-    }
-
-    @Override
-    public Mono<CarAd> update(CarAdDto entity, String id) {
-        return null;
-    }
-
-    @Override
-    public Mono<CarAd> delete(String id) {
-        return null;
+    public Mono<Ad> update(AdDto entity, String id) {
+        return super.getRepository().findById(id)
+                .flatMap(ad -> super.getAdMapper().carAdDtoToCarAd(entity).flatMap(newCarAd -> {
+                    CarAd updatedAd = (CarAd) ad;
+                    updatedAd.setMaker(newCarAd.getMaker());
+                    updatedAd.setModel(newCarAd.getModel());
+                    updatedAd.setYear(newCarAd.getYear());
+                    updatedAd.setImageList(newCarAd.getImageList());
+                    return super.getRepository().save(updatedAd);
+                }).map(basicAd -> (Ad) basicAd))
+                .switchIfEmpty(Mono.error(new Exception("Could not be update Ad: " + entity)));
     }
 }

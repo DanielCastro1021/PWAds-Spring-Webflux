@@ -1,6 +1,6 @@
-package com.example.reactivepwads.domain.ads.model.basic_ad;
+package com.example.reactivepwads.reactive.ads.model.basic_ad;
 
-import com.example.reactivepwads.domain.ads.model.ad.Ad;
+import com.example.reactivepwads.reactive.ads.model.ad.Ad;
 import lombok.*;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;

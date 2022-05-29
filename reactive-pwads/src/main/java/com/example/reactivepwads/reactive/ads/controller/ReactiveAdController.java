@@ -1,6 +1,6 @@
 package com.example.reactivepwads.reactive.ads.controller;
 
-import com.example.reactivepwads.domain.ads.model.ad.Ad;
+import com.example.reactivepwads.reactive.ads.model.ad.Ad;
 import com.example.reactivepwads.reactive.ads.service.AdService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -12,16 +12,11 @@ import reactor.util.function.Tuple2;
 
 import java.time.Duration;
 
-@RequestMapping("/reactive/ads")
+@RequestMapping("/api/ads")
 @RestController
 @AllArgsConstructor
 public class ReactiveAdController {
     private final AdService adService;
-
-    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<Ad> all() {
-        return adService.findAll();
-    }
 
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Tuple2<Long, Ad>> getAdByEvent() {

@@ -1,4 +1,4 @@
-package com.example.reactivepwads.domain.ads.model.ad;
+package com.example.reactivepwads.reactive.ads.model.ad;
 
 import lombok.*;
 

@@ -1,6 +1,6 @@
-package com.example.reactivepwads.domain.ads.model.basic_ad;
+package com.example.reactivepwads.reactive.ads.model.basic_ad;
 
-import com.example.reactivepwads.domain.ads.model.ad.AdDto;
+import com.example.reactivepwads.reactive.ads.model.ad.AdDto;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;

@@ -4,13 +4,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface WebfluxService<T, S> {
-    Flux<T> findAll();
+    Flux<? extends T> findAll();
 
-    Mono<T> findById(String id);
+    Mono<? extends T> findById(String id);
 
-    Mono<T> save(S entity);
+    Mono<? extends T> save(S entity);
 
-    Mono<T> update(S entity, String id);
+    Mono<? extends T> update(S entity, String id);
 
-    Mono<T> delete(String id);
+    Mono<? extends T> delete(String id);
 }

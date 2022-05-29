@@ -1,6 +1,4 @@
-package com.example.reactivepwads.domain.messages.model;
-
-import com.example.reactivepwads.domain.ads.model.ad.Ad;
+package com.example.reactivepwads.reactive.ads.model.ad;
 
 import com.example.reactivepwads.security.model.User;
 import lombok.EqualsAndHashCode;
@@ -14,14 +12,16 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
-
+import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
-@Document(collection = "messages")
-public  class Message {
+@Document(collection = "ads")
+public abstract class Ad {
+
     @Id
     private String id;
 
@@ -31,19 +31,15 @@ public  class Message {
     @LastModifiedDate
     private Date lastModifiedDate;
 
-    @DBRef
-    private User from;
+    private String owner;
 
-    @DBRef
-    private User to;
+    private List<String> imageList;
 
-    @DBRef
-    private Ad ad;
-
-    private String message;
-
-    public Message() {
+    public Ad() {
     }
 
+    public Ad(String owner) {
+        this.owner = owner;
+    }
 
 }

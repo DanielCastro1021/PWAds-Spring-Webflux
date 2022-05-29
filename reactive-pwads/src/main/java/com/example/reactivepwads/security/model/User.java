@@ -4,6 +4,7 @@ package com.example.reactivepwads.security.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,10 +27,16 @@ import lombok.ToString;
 public class User implements UserDetails {
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @Getter
+    @Setter
+    private String id;
     private String username;
 
     private String password;
 
+    @Getter
+    @Setter
     private String email;
 
     @Getter
@@ -64,6 +71,18 @@ public class User implements UserDetails {
         this.username = username;
     }
 
+    @JsonIgnore
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @JsonProperty
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
     @Override
     public boolean isAccountNonExpired() {
         return false;
@@ -87,24 +106,5 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream().map(authority -> new SimpleGrantedAuthority(authority.name())).collect(Collectors.toList());
-    }
-
-    @JsonIgnore
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @JsonProperty
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 }

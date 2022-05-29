@@ -1,4 +1,4 @@
-package com.example.reactivepwads.security.model;
+package com.example.reactivepwads.security.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
