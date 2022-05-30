@@ -5,5 +5,5 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Flux;
 
 public interface PersonalAdService<T extends Ad> {
-    Flux<T> myAds(ServerRequest request);
+    Flux<T> myAds();
 }

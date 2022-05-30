@@ -37,9 +37,4 @@ public abstract class Ad {
 
     public Ad() {
     }
-
-    public Ad(String owner) {
-        this.owner = owner;
-    }
-
 }

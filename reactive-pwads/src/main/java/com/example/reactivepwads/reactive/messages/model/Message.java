@@ -3,10 +3,7 @@ package com.example.reactivepwads.reactive.messages.model;
 import com.example.reactivepwads.reactive.ads.model.ad.Ad;
 
 import com.example.reactivepwads.security.model.User;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -20,8 +17,9 @@ import java.util.Date;
 @Setter
 @ToString
 @EqualsAndHashCode
+@NoArgsConstructor
 @Document(collection = "messages")
-public  class Message {
+public class Message {
     @Id
     private String id;
 
@@ -31,19 +29,11 @@ public  class Message {
     @LastModifiedDate
     private Date lastModifiedDate;
 
-    @DBRef
-    private User from;
+    private String from;
 
-    @DBRef
-    private User to;
+    private String to;
 
-    @DBRef
-    private Ad ad;
+    private String ad;
 
     private String message;
-
-    public Message() {
-    }
-
-
 }

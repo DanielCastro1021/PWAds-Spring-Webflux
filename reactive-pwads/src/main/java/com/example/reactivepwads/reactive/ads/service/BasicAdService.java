@@ -1,37 +1,59 @@
 package com.example.reactivepwads.reactive.ads.service;
 
+import com.example.reactivepwads.exceptions.AdNotFoundException;
 import com.example.reactivepwads.reactive.ads.mapper.AdMapper;
-import com.example.reactivepwads.reactive.ads.model.ad.Ad;
-import com.example.reactivepwads.reactive.ads.model.ad.AdDto;
 import com.example.reactivepwads.reactive.ads.model.basic_ad.BasicAd;
-import com.example.reactivepwads.reactive.ads.repository.ReactiveAdRepository;
+import com.example.reactivepwads.reactive.ads.model.basic_ad.BasicAdDto;
+import com.example.reactivepwads.reactive.ads.repository.AdReactiveRepository;
+import com.example.reactivepwads.reactive.ads.util.AdWebfluxService;
 import com.example.reactivepwads.security.repository.ReactiveUserRepository;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class BasicAdService extends AdService {
-    public BasicAdService(ReactiveAdRepository<Ad> repository, ReactiveUserRepository userRepository, AdMapper adMapper) {
+public class BasicAdService extends AdWebfluxService<BasicAd, BasicAdDto> {
+    public BasicAdService(AdReactiveRepository<BasicAd> repository, ReactiveUserRepository userRepository, AdMapper adMapper) {
         super(repository, userRepository, adMapper);
     }
 
     @Override
-    public Mono<Ad> save(AdDto entity) {
-        return super.getAdMapper().basicAdDtoToBasicAd(entity)
-                .flatMap(basicAd -> super.getRepository().save(basicAd).map(ad -> (Ad) ad))
-                .switchIfEmpty(Mono.error(new Exception("Could not save Ad: " + entity)));
+    public Flux<BasicAd> myAds() {
+        return ReactiveSecurityContextHolder.getContext().map(context -> context.getAuthentication().getPrincipal()).flatMap(userDetails -> getUserRepository().findByUsername(userDetails.toString())).flatMapMany(user -> super.getRepository().findByOwner(user.getUsername()));
+
     }
 
     @Override
-    public Mono<Ad> update(AdDto entity, String id) {
-        return super.getRepository().findById(id)
-                .flatMap(ad -> super.getAdMapper().basicAdDtoToBasicAd(entity).flatMap(newBasicAd -> {
-                    BasicAd updatedAd = (BasicAd) ad;
-                    updatedAd.setDescription(newBasicAd.getDescription());
-                    updatedAd.setTitle(newBasicAd.getTitle());
-                    updatedAd.setImageList(newBasicAd.getImageList());
-                    return super.getRepository().save(updatedAd);
-                }).map(basicAd -> (Ad) basicAd))
-                .switchIfEmpty(Mono.error(new Exception("Could not be update Ad: " + entity)));
+    public Flux<BasicAd> findAll() {
+        return super.getRepository().findAll();
     }
+
+    @Override
+    public Mono<BasicAd> findById(String id) {
+        return super.getRepository().findById(id).switchIfEmpty((Mono.error(new AdNotFoundException(id))));
+    }
+
+    @Override
+    public Mono<BasicAd> save(BasicAdDto entity) {
+        return super.getAdMapper().basicAdDtoToBasicAd(entity).flatMap(basicAd -> super.getRepository().save(basicAd)).switchIfEmpty(Mono.error(new Exception("Could not save BasicAd: " + entity)));
+    }
+
+    @Override
+    public Mono<BasicAd> update(BasicAdDto entity, String id) {
+        return ReactiveSecurityContextHolder.getContext().map(context -> context.getAuthentication().getPrincipal()).flatMap(userDetails -> getUserRepository().findByUsername(userDetails.toString())).flatMap(user -> super.getRepository().findByIdAndOwner(id, user.getUsername())).flatMap(basicAd -> super.getAdMapper().basicAdDtoToBasicAd(entity).flatMap(newBasicAd -> {
+            basicAd.setDescription(newBasicAd.getDescription());
+            basicAd.setTitle(newBasicAd.getTitle());
+            basicAd.setImageList(newBasicAd.getImageList());
+            return super.getRepository().save(basicAd);
+        })).switchIfEmpty(Mono.error(new Exception("User does not own the basic ad, with this id:" + id + " .")));
+    }
+
+
+    @Override
+    public Mono<BasicAd> delete(String id) {
+        return super.getRepository().findById(id).flatMap(ad -> Mono.just(super.getRepository().delete(ad)).then(Mono.just(ad))).switchIfEmpty(Mono.error(new AdNotFoundException(id)));
+    }
+
 }

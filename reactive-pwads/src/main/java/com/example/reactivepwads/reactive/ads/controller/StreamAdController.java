@@ -15,7 +15,7 @@ import java.time.Duration;
 @RequestMapping("/api/ads")
 @RestController
 @AllArgsConstructor
-public class ReactiveAdController {
+public class StreamAdController {
     private final AdService adService;
 
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

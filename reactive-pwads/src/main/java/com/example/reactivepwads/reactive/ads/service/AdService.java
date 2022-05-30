@@ -3,12 +3,11 @@ package com.example.reactivepwads.reactive.ads.service;
 import com.example.reactivepwads.reactive.ads.mapper.AdMapper;
 import com.example.reactivepwads.reactive.ads.model.ad.Ad;
 import com.example.reactivepwads.reactive.ads.model.ad.AdDto;
-import com.example.reactivepwads.reactive.ads.model.basic_ad.BasicAdDto;
-import com.example.reactivepwads.reactive.ads.model.car_ad.CarAdDto;
-import com.example.reactivepwads.reactive.ads.repository.ReactiveAdRepository;
+import com.example.reactivepwads.reactive.ads.repository.AdReactiveRepository;
 import com.example.reactivepwads.exceptions.AdNotFoundException;
 import com.example.reactivepwads.reactive.ads.util.AdWebfluxService;
 import com.example.reactivepwads.security.repository.ReactiveUserRepository;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Flux;
@@ -17,15 +16,17 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class AdService extends AdWebfluxService<Ad, AdDto> {
-    public AdService(ReactiveAdRepository<Ad> repository, ReactiveUserRepository userRepository, AdMapper adMapper) {
+    public AdService(AdReactiveRepository<Ad> repository, ReactiveUserRepository userRepository, AdMapper adMapper) {
         super(repository, userRepository, adMapper);
     }
 
     @Override
-    public Flux<Ad> myAds(ServerRequest request) {
-        return super.getUserRepository()
-                .findByUsername(request.principal().toString())
-                .flatMapMany(user -> super.getRepository().findByOwner(user));
+    public Flux<Ad> myAds() {
+        return ReactiveSecurityContextHolder
+                .getContext()
+                .map(context -> context.getAuthentication().getPrincipal())
+                .flatMap(userDetails -> getUserRepository().findByUsername(userDetails.toString()))
+                .flatMapMany(user -> super.getRepository().findByOwner(user.getUsername()));
     }
 
     @Override
