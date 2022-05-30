@@ -6,17 +6,16 @@ import com.example.reactivepwads.reactive.ads.model.ad.AdDto;
 import com.example.reactivepwads.reactive.ads.repository.AdReactiveRepository;
 import com.example.reactivepwads.exceptions.AdNotFoundException;
 import com.example.reactivepwads.reactive.ads.util.AdWebfluxService;
-import com.example.reactivepwads.security.repository.ReactiveUserRepository;
+import com.example.reactivepwads.security.repository.UserReactiveRepository;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
 @Service
 public class AdService extends AdWebfluxService<Ad, AdDto> {
-    public AdService(AdReactiveRepository<Ad> repository, ReactiveUserRepository userRepository, AdMapper adMapper) {
+    public AdService(AdReactiveRepository<Ad> repository, UserReactiveRepository userRepository, AdMapper adMapper) {
         super(repository, userRepository, adMapper);
     }
 

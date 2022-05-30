@@ -1,6 +1,6 @@
 package com.example.reactivepwads.security.service;
 
-import com.example.reactivepwads.security.repository.ReactiveUserRepository;
+import com.example.reactivepwads.security.repository.UserReactiveRepository;
 import com.example.reactivepwads.security.model.User;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class UserService {
 
-    private final ReactiveUserRepository userRepository;
+    private final UserReactiveRepository userRepository;
 
     public Mono<User> findByUsername(String username) {
         return userRepository.findByUsername(username);

@@ -5,7 +5,7 @@ import com.example.reactivepwads.reactive.ads.model.ad.Ad;
 import com.example.reactivepwads.reactive.ads.model.ad.AdDto;
 import com.example.reactivepwads.reactive.ads.repository.AdReactiveRepository;
 import com.example.reactivepwads.reactive.util.WebfluxService;
-import com.example.reactivepwads.security.repository.ReactiveUserRepository;
+import com.example.reactivepwads.security.repository.UserReactiveRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,7 +15,7 @@ public abstract class AdWebfluxService<T extends Ad, S extends AdDto> implements
 
     private final AdReactiveRepository<T> repository;
 
-    private final ReactiveUserRepository userRepository;
+    private final UserReactiveRepository userRepository;
 
     private final AdMapper adMapper;
 }

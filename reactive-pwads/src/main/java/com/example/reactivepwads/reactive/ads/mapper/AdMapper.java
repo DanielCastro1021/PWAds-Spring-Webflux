@@ -9,7 +9,7 @@ import com.example.reactivepwads.reactive.ads.model.car_ad.CarAd;
 import com.example.reactivepwads.reactive.ads.model.car_ad.CarAdDto;
 import com.example.reactivepwads.exceptions.UserNotFoundException;
 import com.example.reactivepwads.security.model.User;
-import com.example.reactivepwads.security.repository.ReactiveUserRepository;
+import com.example.reactivepwads.security.repository.UserReactiveRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class AdMapper {
     private final AdFactory adFactory;
-    private final ReactiveUserRepository userRepository;
+    private final UserReactiveRepository userRepository;
 
 
     public Mono<BasicAd> basicAdDtoToBasicAd(AdDto dto) throws UserNotFoundException {
