@@ -1,53 +1,66 @@
 package com.example.reactivepwads.reactive.messages.service;
 
+import com.example.reactivepwads.exceptions.MessageNotFoundException;
+import com.example.reactivepwads.reactive.messages.mapper.MessageMapper;
 import com.example.reactivepwads.reactive.messages.model.Message;
 import com.example.reactivepwads.reactive.messages.model.MessageDto;
 import com.example.reactivepwads.reactive.messages.repository.MessageReactiveRepository;
 import com.example.reactivepwads.reactive.messages.util.PersonalMessageService;
 import com.example.reactivepwads.reactive.util.WebfluxService;
+import com.example.reactivepwads.security.repository.UserReactiveRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
 @AllArgsConstructor
 public class MessageService implements WebfluxService<Message, MessageDto>, PersonalMessageService {
-    private final MessageReactiveRepository messageReactiveRepository;
+    private final MessageReactiveRepository repository;
+
+    private final UserReactiveRepository userReactiveRepository;
+    private final MessageMapper mapper;
 
     @Override
-    public Flux<Message> sent(ServerRequest request) {
-        return null;
+    public Flux<Message> sent() {
+        return ReactiveSecurityContextHolder.getContext().map(context -> context.getAuthentication().getPrincipal()).flatMapMany(userDetails -> repository.findByFrom(userDetails.toString()));
     }
 
     @Override
-    public Flux<Message> received(ServerRequest request) {
-        return null;
+    public Flux<Message> received() {
+        return ReactiveSecurityContextHolder.getContext().map(context -> context.getAuthentication().getPrincipal()).flatMapMany(userDetails -> repository.findByTo(userDetails.toString()));
     }
 
     @Override
     public Flux<Message> findAll() {
-        return null;
+        return repository.findAll();
     }
 
     @Override
     public Mono<Message> findById(String id) {
-        return null;
+        return repository.findById(id);
     }
 
     @Override
     public Mono<Message> save(MessageDto entity) {
-        return null;
+        return mapper.messageDtoToMessage(entity).flatMap(repository::save);
     }
 
     @Override
     public Mono<Message> update(MessageDto entity, String id) {
-        return null;
+        return ReactiveSecurityContextHolder.getContext().map(context -> context.getAuthentication().getPrincipal()).flatMap(userDetails -> userReactiveRepository.findByUsername(userDetails.toString()))
+                .flatMap(user -> repository.findById(id)).flatMap(message -> mapper.messageDtoToMessage(entity).flatMap(newMessage -> {
+                    message.setMessage(newMessage.getMessage());
+                    message.setFrom(newMessage.getFrom());
+                    message.setTo(newMessage.getTo());
+                    message.setAd(newMessage.getAd());
+                    return repository.save(message);
+                })).switchIfEmpty(Mono.error(new Exception("User does not own the basic ad, with this id:" + id + " .")));
     }
 
     @Override
     public Mono<Message> delete(String id) {
-        return null;
+        return repository.findById(id).flatMap(message -> Mono.just(repository.delete(message)).then(Mono.just(message))).switchIfEmpty(Mono.error(new MessageNotFoundException(id)));
     }
 }
