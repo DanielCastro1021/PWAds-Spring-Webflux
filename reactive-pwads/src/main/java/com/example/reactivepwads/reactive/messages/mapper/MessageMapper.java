@@ -1,6 +1,5 @@
 package com.example.reactivepwads.reactive.messages.mapper;
 
-import com.example.reactivepwads.exceptions.AdNotFoundException;
 import com.example.reactivepwads.exceptions.UserNotFoundException;
 import com.example.reactivepwads.reactive.ads.model.ad.Ad;
 import com.example.reactivepwads.reactive.ads.repository.AdReactiveRepository;
@@ -11,14 +10,9 @@ import com.example.reactivepwads.security.model.User;
 import com.example.reactivepwads.security.repository.UserReactiveRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolder;
 
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
-import java.util.Date;
-import java.util.Optional;
 
 @Component
 @AllArgsConstructor
