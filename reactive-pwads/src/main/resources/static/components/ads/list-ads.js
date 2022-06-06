@@ -4,7 +4,7 @@ let ads_type;
 
 
 function loadNavBar() {
-    $('#navbar').load('../../html/navbar.html', () => {
+    $('#navbar').load('/html/navbar.html', () => {
         $('#dropdownMenuButton2').toggleClass('active');
     });
 }
@@ -113,6 +113,7 @@ async function fetchAllAds() {
 function getMyAds() {
     fetchMyAds()
         .then((json) => {
+            console.log(json);
             if (json.hasOwnProperty('_embedded')) ads = json['_embedded'];
             else {
                 $('#ads-list').append('<p>No ads were found.</p>');
