@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>List Messages</title>
+    <meta name="theme-color" content="#ee8d32"/>
+    <link rel="manifest" href="../../manifest.json"/>
+    <link rel="apple-touch-icon" href="../../icons/ios/100.png"/>
+    <link rel="shortcut icon" href="../../icons/ios/100.png"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+</head>
+<body>
+<!-- Navbar-->
+<div id="navbar"></div>
+<!-- Navbar -->
+
+<div class="container">
+    <div class="row">
+        <!--SideBar-->
+        <div id="sidebar" class="column sidebar">
+            <a id="received-msg-btn" href="list-messages.html?messages=received"
+            >Received Messages</a
+            >
+            <a id="sent-msg-btn" href="list-messages.html?messages=sent"
+            >Sent Messages</a
+            >
+        </div>
+        <!--SideBar-->
+
+        <!-- Ads List-->
+        <div class="double-column">
+            <h2
+                    id="list-msg-title"
+                    style="padding: 0 10px 10px; margin-top: 0"
+            ></h2>
+            <ul
+                    id="msg-list"
+                    class="list-group d-flex w-100 justify-content-between"
+            ></ul>
+        </div>
+        <!-- Ads List-->
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="list-messages.js"></script>
+</body>
+</html>
