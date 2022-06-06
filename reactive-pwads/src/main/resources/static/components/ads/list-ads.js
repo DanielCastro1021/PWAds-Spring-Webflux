@@ -10,9 +10,7 @@ function loadNavBar() {
 }
 
 function checkUserLogged() {
-    if (localStorage.length > 0 && localStorage.getItem('token') !== null)
-        $('#my-ads-btn').show();
-    else $('#my-ads-btn').hide();
+    if (localStorage.length > 0 && localStorage.getItem('token') !== null) $('#my-ads-btn').show(); else $('#my-ads-btn').hide();
 }
 
 function transitionAdsList() {
@@ -23,9 +21,7 @@ function transitionAdsList() {
 
 function getHtmlAdItem(ad) {
     let $htmlAdItem = $('<li>')
-        .addClass(
-            'list-group-item list-group-item-action flex-column align-items-start'
-        )
+        .addClass('list-group-item list-group-item-action flex-column align-items-start')
         .css('display', 'grid');
     let $title = $('<h4>');
     let $description = $('<p>');
@@ -40,17 +36,10 @@ function getHtmlAdItem(ad) {
     //Car Ad
     else if (ad.hasOwnProperty('maker')) {
         $title.text(ad['maker'] + ' ' + ad['model']);
-        $description.text(
-            'Car for sale: ' +
-            ad['maker'] +
-            ' ' +
-            ad['model'] +
-            ' of year ' +
-            ad['year']
-        );
+        $description.text('Car for sale: ' + ad['maker'] + ' ' + ad['model'] + ' of year ' + ad['year']);
     }
 
-    $owner.text(`Submitted by: ${ad['owner']['username']}`);
+    $owner.text(`Submitted by: ${ad['owner']}`);
     $date.text(`Submitted at: ${dateParsed}`);
     $htmlAdItem.append([$title, $description, $owner, $date]);
     $htmlAdItem.click(() => {
@@ -63,29 +52,43 @@ function loadAdList() {
     ads.forEach(getHtmlAdItem);
 }
 
-function loadMixedAdsList() {
-    if (ads.hasOwnProperty('basicAdList') && ads.hasOwnProperty('carAdList')) {
-        let shuffle_arr = ads['basicAdList'].concat(ads['carAdList']).sort();
-        shuffle_arr.forEach(getHtmlAdItem);
-    } else if (ads.hasOwnProperty('basicAdList')) {
-        ads['basicAdList'].forEach(getHtmlAdItem);
-    } else if (ads.hasOwnProperty('carAdList')) {
-        ads['carAdList'].forEach(getHtmlAdItem);
-    } else {
-        $('#ads-list').append('<p>No ads were found.</p>');
-    }
-}
 
 async function fetchMyAds() {
     let headers = {
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`, // notice the Bearer before your token
+        'Content-type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}`, // notice the Bearer before your token
     };
     const options = {
-        method: 'GET',
-        headers: new Headers(headers),
+        method: 'GET', headers: new Headers(headers),
     };
     return await fetch(ads_api + '/personal', options)
+        .then((response) => {
+            return response.json();
+        })
+        .catch((err) => {
+            return [];
+        });
+}
+
+async function fetchAllCarAds() {
+    let headers = {};
+    const options = {
+        method: 'GET', headers: headers,
+    };
+    return await fetch(ads_api + "/car-ads", options)
+        .then((response) => {
+            return response.json();
+        })
+        .catch((err) => {
+            return [];
+        });
+}
+
+async function fetchAllBasicAds() {
+    let headers = {};
+    const options = {
+        method: 'GET', headers: headers,
+    };
+    return await fetch(ads_api + "/basic-ads", options)
         .then((response) => {
             return response.json();
         })
@@ -97,10 +100,9 @@ async function fetchMyAds() {
 async function fetchAllAds() {
     let headers = {};
     const options = {
-        method: 'GET',
-        headers: headers,
+        method: 'GET', headers: headers,
     };
-    return await fetch(ads_api + '/all', options)
+    return await fetch(ads_api, options)
         .then((response) => {
             return response.json();
         })
@@ -114,22 +116,19 @@ function getMyAds() {
     fetchMyAds()
         .then((json) => {
             console.log(json);
-            if (json.hasOwnProperty('_embedded')) ads = json['_embedded'];
-            else {
+            if (json.length > 0) ads = json; else {
                 $('#ads-list').append('<p>No ads were found.</p>');
                 reject("Empty ads lists!");
             }
         })
-        .then(loadMixedAdsList)
+        .then(loadAdList)
         .catch(err => console.log(err));
 }
 
 function getCarAds() {
     fetchAllAds()
         .then((json) => {
-            ads = json['_embedded'] || [];
-            if (ads.hasOwnProperty('carAdList')) ads = ads['carAdList'];
-            else {
+            if (json.length > 0) ads = json; else {
                 $('#ads-list').append('<p>No ads were found.</p>');
                 reject("Empty ads lists!");
             }
@@ -141,9 +140,7 @@ function getCarAds() {
 function getBasicAds() {
     fetchAllAds()
         .then((json) => {
-            ads = json['_embedded'] || [];
-            if (ads.hasOwnProperty('basicAdList')) ads = ads['basicAdList'];
-            else {
+            if (json.length > 0) ads = json; else {
                 $('#ads-list').append('<p>No ads were found.</p>');
                 reject("Empty ads lists!");
             }
@@ -155,13 +152,14 @@ function getBasicAds() {
 function getAllAds() {
     fetchAllAds()
         .then((json) => {
+            console.log(json)
             ads = json['_embedded'] || [];
-            if (!ads.hasOwnProperty('basicAdList') && !ads.hasOwnProperty('carAdList')) {
+            if (json.length > 0) ads = json; else {
                 $('#ads-list').append('<p>No ads were found.</p>');
                 reject("Empty ads lists!");
             }
         })
-        .then(loadMixedAdsList)
+        .then(loadAdList)
         .catch(err => console.log(err));
 }
 

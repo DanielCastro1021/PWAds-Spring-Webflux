@@ -96,8 +96,6 @@
                     >
                 </li>
             </ul>
-            </li>
-            </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
@@ -126,7 +124,7 @@
     }
 
     function logout() {
-        if (localStorage.length > 1) {
+        if (localStorage.length > 0) {
             localStorage.clear();
             window.location.href = location.origin;
         }

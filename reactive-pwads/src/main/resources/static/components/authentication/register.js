@@ -1,4 +1,4 @@
-const register_api_url = '/api/register';
+const register_api_url = '/register';
 
 
 async function postRegister(user) {

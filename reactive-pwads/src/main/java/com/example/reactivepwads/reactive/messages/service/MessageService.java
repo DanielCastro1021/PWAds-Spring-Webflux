@@ -56,11 +56,11 @@ public class MessageService implements WebfluxService<Message, MessageDto>, Pers
                     message.setTo(newMessage.getTo());
                     message.setAd(newMessage.getAd());
                     return repository.save(message);
-                })).switchIfEmpty(Mono.error(new Exception("User does not own the basic ad, with this id:" + id + " .")));
+                }));
     }
 
     @Override
-    public Mono<Message> delete(String id) {
-        return repository.findById(id).flatMap(message -> Mono.just(repository.delete(message)).then(Mono.just(message))).switchIfEmpty(Mono.error(new MessageNotFoundException(id)));
+    public Mono<Void> delete(String id) {
+        return repository.findById(id).flatMap(repository::delete).switchIfEmpty(Mono.error(new MessageNotFoundException(id)));
     }
 }

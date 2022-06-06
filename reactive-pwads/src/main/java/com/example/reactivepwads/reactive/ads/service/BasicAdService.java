@@ -4,7 +4,7 @@ import com.example.reactivepwads.exceptions.AdNotFoundException;
 import com.example.reactivepwads.reactive.ads.mapper.AdMapper;
 import com.example.reactivepwads.reactive.ads.model.basic_ad.BasicAd;
 import com.example.reactivepwads.reactive.ads.model.basic_ad.BasicAdDto;
-import com.example.reactivepwads.reactive.ads.repository.AdReactiveRepository;
+import com.example.reactivepwads.reactive.ads.repository.BasicAdReactiveRepository;
 import com.example.reactivepwads.reactive.ads.util.AdWebfluxService;
 import com.example.reactivepwads.security.repository.UserReactiveRepository;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class BasicAdService extends AdWebfluxService<BasicAd, BasicAdDto> {
-    public BasicAdService(AdReactiveRepository<BasicAd> repository, UserReactiveRepository userRepository, AdMapper adMapper) {
+    public BasicAdService(BasicAdReactiveRepository repository, UserReactiveRepository userRepository, AdMapper adMapper) {
         super(repository, userRepository, adMapper);
     }
 
@@ -51,8 +51,13 @@ public class BasicAdService extends AdWebfluxService<BasicAd, BasicAdDto> {
 
 
     @Override
-    public Mono<BasicAd> delete(String id) {
-        return super.getRepository().findById(id).flatMap(ad -> Mono.just(super.getRepository().delete(ad)).then(Mono.just(ad))).switchIfEmpty(Mono.error(new AdNotFoundException(id)));
+    public Mono<Void> delete(String id) {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(context -> context.getAuthentication().getPrincipal())
+                .flatMap(userDetails -> getUserRepository().findByUsername(userDetails.toString()))
+                .flatMap(user -> super.getRepository().findByIdAndOwner(id, user.getUsername()))
+                .switchIfEmpty(Mono.error(new Exception("The user does not own the ad with this id: " + id + ".")))
+                .flatMap(ad -> super.getRepository().delete(ad));
     }
 
 }

@@ -1,4 +1,4 @@
-const login_api_url = '/api/login';
+const login_api_url = '/login';
 
 
 async function postLogin(user) {

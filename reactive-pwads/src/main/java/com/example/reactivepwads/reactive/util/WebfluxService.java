@@ -12,5 +12,5 @@ public interface WebfluxService<T, S> {
 
     Mono<T> update(S entity, String id);
 
-    Mono<T> delete(String id);
+    Mono<Void> delete(String id);
 }
