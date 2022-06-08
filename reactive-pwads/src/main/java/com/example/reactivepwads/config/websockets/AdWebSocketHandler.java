@@ -1,4 +1,4 @@
-package com.example.reactivepwads.config.websocket;
+package com.example.reactivepwads.config.websockets;
 
 import com.example.reactivepwads.reactive.ads.event.AdCreatedEvent;
 import com.example.reactivepwads.reactive.ads.event.AdCreatedEventPublisher;

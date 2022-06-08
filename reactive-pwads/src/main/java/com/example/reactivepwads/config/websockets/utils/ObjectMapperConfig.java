@@ -1,4 +1,4 @@
-package com.example.reactivepwads.config.utils;
+package com.example.reactivepwads.config.websockets.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
