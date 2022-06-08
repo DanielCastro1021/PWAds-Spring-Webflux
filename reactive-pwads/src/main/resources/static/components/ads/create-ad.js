@@ -1,4 +1,4 @@
-const api = '/api/';
+const api = '/api';
 let basicForm = $('#basic-ad-form');
 let carForm = $('#car-ad-form');
 let typeForm;
