@@ -1,4 +1,4 @@
-package com.example.reactivepwads.config;
+package com.example.reactivepwads.config.cors;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.CorsRegistry;

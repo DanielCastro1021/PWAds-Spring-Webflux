@@ -1,12 +1,14 @@
 package com.example.reactivepwads.reactive.ads.service;
 
 import com.example.reactivepwads.exceptions.AdNotFoundException;
+import com.example.reactivepwads.reactive.ads.event.AdCreatedEvent;
 import com.example.reactivepwads.reactive.ads.mapper.AdMapper;
 import com.example.reactivepwads.reactive.ads.model.basic_ad.BasicAd;
 import com.example.reactivepwads.reactive.ads.model.basic_ad.BasicAdDto;
-import com.example.reactivepwads.reactive.ads.repository.BasicAdReactiveRepository;
+import com.example.reactivepwads.reactive.ads.repository.AdReactiveRepository;
 import com.example.reactivepwads.reactive.ads.util.AdWebfluxService;
 import com.example.reactivepwads.security.repository.UserReactiveRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -14,8 +16,11 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class BasicAdService extends AdWebfluxService<BasicAd, BasicAdDto> {
-    public BasicAdService(BasicAdReactiveRepository repository, UserReactiveRepository userRepository, AdMapper adMapper) {
+    private final ApplicationEventPublisher publisher;
+
+    public BasicAdService(AdReactiveRepository<BasicAd> repository, UserReactiveRepository userRepository, AdMapper adMapper, ApplicationEventPublisher publisher) {
         super(repository, userRepository, adMapper);
+        this.publisher = publisher;
     }
 
     @Override
@@ -36,7 +41,9 @@ public class BasicAdService extends AdWebfluxService<BasicAd, BasicAdDto> {
 
     @Override
     public Mono<BasicAd> save(BasicAdDto entity) {
-        return super.getAdMapper().basicAdDtoToBasicAd(entity).flatMap(basicAd -> super.getRepository().save(basicAd)).switchIfEmpty(Mono.error(new Exception("Could not save BasicAd: " + entity)));
+        return super.getAdMapper().basicAdDtoToBasicAd(entity)
+                .flatMap(basicAd -> super.getRepository().save(basicAd).doOnSuccess(basicAd1 -> publisher.publishEvent(new AdCreatedEvent(basicAd1))))
+                .switchIfEmpty(Mono.error(new Exception("Could not save BasicAd: " + entity)));
     }
 
     @Override
