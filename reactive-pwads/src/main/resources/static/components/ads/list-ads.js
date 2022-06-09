@@ -1,7 +1,8 @@
 const ads_api = '/api/ads';
+const ws_url = "ws://localhost:8080/ws/ads";
 let ads = [];
 let ads_type;
-
+let ws = null;
 
 function loadNavBar() {
     $('#navbar').load('/html/navbar.html', () => {
@@ -14,9 +15,10 @@ function checkUserLogged() {
 }
 
 function transitionAdsList() {
+    let $ad_list = $('#ads-list');
     $('#sidebar>a.active').removeClass('active');
-    $('#ads-list').empty();
-    $('#ads-list').fadeIn('slow');
+    $ad_list.empty();
+    $ad_list.fadeIn('slow');
 }
 
 function getHtmlAdItem(ad) {
@@ -122,6 +124,7 @@ function getMyAds() {
             }
         })
         .then(loadAdList)
+        .then(webSocketAdListener)
         .catch(err => console.log(err));
 }
 
@@ -134,6 +137,7 @@ function getCarAds() {
             }
         })
         .then(loadAdList)
+        .then(webSocketAdListener)
         .catch(err => console.log(err));
 }
 
@@ -146,6 +150,7 @@ function getBasicAds() {
             }
         })
         .then(loadAdList)
+        .then(webSocketAdListener)
         .catch(err => console.log(err));
 }
 
@@ -160,6 +165,7 @@ function getAllAds() {
             }
         })
         .then(loadAdList)
+        .then(webSocketAdListener)
         .catch(err => console.log(err));
 }
 
@@ -190,6 +196,24 @@ function loadAds() {
     }
 }
 
+function webSocketAdListener() {
+    ws = new WebSocket(ws_url);
+    ws.onopen = () => {
+        console.log("Active Ad WebSocket.")
+    };
+    ws.onmessage = (event) => {
+        let ad = JSON.parse(event.data);
+        console.log("WebSocket => New Ad:" + event.data);
+        console.log("WebSocket => New Ad:" + ad);
+        getHtmlAdItem(ad);
+    };
+
+    ws.onclose = (event) => {
+        console.log("Close Ad WebSocket.")
+    }
+
+}
+
 window.onload = () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -197,4 +221,8 @@ window.onload = () => {
     checkUserLogged();
     loadNavBar();
     loadAds();
+};
+
+window.onunload = () => {
+    if (ws) ws.close();
 };
