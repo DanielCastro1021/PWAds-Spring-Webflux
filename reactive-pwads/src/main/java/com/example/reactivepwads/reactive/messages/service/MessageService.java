@@ -20,9 +20,7 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class MessageService implements WebfluxService<Message, MessageDto>, PersonalMessageService {
     private final MessageReactiveRepository repository;
-
     private final ApplicationEventPublisher publisher;
-
     private final UserReactiveRepository userReactiveRepository;
     private final MessageMapper mapper;
 

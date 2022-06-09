@@ -1,9 +1,9 @@
 package com.example.reactivepwads.reactive.messages.handler;
 
 import com.example.reactivepwads.reactive.ads.model.ad.Ad;
+import com.example.reactivepwads.reactive.messages.model.Message;
 import com.example.reactivepwads.reactive.messages.model.MessageDto;
 import com.example.reactivepwads.reactive.messages.service.MessageService;
-import com.example.reactivepwads.reactive.messages.model.Message;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;

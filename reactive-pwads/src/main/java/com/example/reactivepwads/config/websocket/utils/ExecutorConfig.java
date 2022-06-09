@@ -1,4 +1,4 @@
-package com.example.reactivepwads.config.websockets.utils;
+package com.example.reactivepwads.config.websocket.utils;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

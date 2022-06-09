@@ -1,7 +1,7 @@
-package com.example.reactivepwads.config.websockets;
+package com.example.reactivepwads.config.websocket;
 
-import com.example.reactivepwads.config.websockets.handler.AdWebSocketHandler;
-import com.example.reactivepwads.config.websockets.handler.MessageWebSocketHandler;
+import com.example.reactivepwads.reactive.ads.websocket.AdWebSocketHandler;
+import com.example.reactivepwads.reactive.messages.websocket.MessageWebSocketHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;

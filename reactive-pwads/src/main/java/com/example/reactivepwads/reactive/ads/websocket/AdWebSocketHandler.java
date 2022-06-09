@@ -1,7 +1,7 @@
-package com.example.reactivepwads.config.websockets.handler;
+package com.example.reactivepwads.reactive.ads.websocket;
 
-import com.example.reactivepwads.reactive.messages.event.MessageCreatedEvent;
-import com.example.reactivepwads.reactive.messages.event.MessageCreatedEventPublisher;
+import com.example.reactivepwads.reactive.ads.event.AdCreatedEvent;
+import com.example.reactivepwads.reactive.ads.event.AdCreatedEventPublisher;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -19,13 +19,13 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class MessageWebSocketHandler implements WebSocketHandler {
+public class AdWebSocketHandler implements WebSocketHandler {
     private final ObjectMapper objectMapper;
-    private final MessageCreatedEventPublisher eventPublisher;
+    private final AdCreatedEventPublisher eventPublisher;
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        Flux<MessageCreatedEvent> publish = Flux.create(eventPublisher).share();
+        Flux<AdCreatedEvent> publish = Flux.create(eventPublisher).share();
         Flux<WebSocketMessage> messageFlux = publish.map(evt -> {
             try {
                 return objectMapper.writeValueAsString(evt.getSource());
@@ -37,5 +37,6 @@ public class MessageWebSocketHandler implements WebSocketHandler {
             return session.textMessage(str);
         });
         return session.send(messageFlux);
+
     }
 }
