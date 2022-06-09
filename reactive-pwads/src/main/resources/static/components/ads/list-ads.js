@@ -76,7 +76,7 @@ async function fetchAllCarAds() {
     const options = {
         method: 'GET', headers: headers,
     };
-    return await fetch(ads_api + "/car-ads", options)
+    return await fetch("/api/car-ads", options)
         .then((response) => {
             return response.json();
         })
@@ -90,7 +90,7 @@ async function fetchAllBasicAds() {
     const options = {
         method: 'GET', headers: headers,
     };
-    return await fetch(ads_api + "/basic-ads", options)
+    return await fetch("/api/basic-ads", options)
         .then((response) => {
             return response.json();
         })
@@ -129,8 +129,9 @@ function getMyAds() {
 }
 
 function getCarAds() {
-    fetchAllAds()
+    fetchAllCarAds()
         .then((json) => {
+            console.log(json)
             if (json.length > 0) ads = json; else {
                 $('#ads-list').append('<p>No ads were found.</p>');
                 reject("Empty ads lists!");
@@ -142,8 +143,9 @@ function getCarAds() {
 }
 
 function getBasicAds() {
-    fetchAllAds()
+    fetchAllBasicAds()
         .then((json) => {
+            console.log(json)
             if (json.length > 0) ads = json; else {
                 $('#ads-list').append('<p>No ads were found.</p>');
                 reject("Empty ads lists!");
@@ -158,7 +160,6 @@ function getAllAds() {
     fetchAllAds()
         .then((json) => {
             console.log(json)
-            ads = json['_embedded'] || [];
             if (json.length > 0) ads = json; else {
                 $('#ads-list').append('<p>No ads were found.</p>');
                 reject("Empty ads lists!");

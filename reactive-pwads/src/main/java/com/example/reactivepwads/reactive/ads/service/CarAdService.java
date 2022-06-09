@@ -9,6 +9,7 @@ import com.example.reactivepwads.reactive.ads.repository.AdReactiveRepository;
 import com.example.reactivepwads.reactive.ads.util.AdWebfluxService;
 import com.example.reactivepwads.security.repository.UserReactiveRepository;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Example;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -34,7 +35,7 @@ public class CarAdService extends AdWebfluxService<CarAd, CarAdDto> {
 
     @Override
     public Flux<CarAd> findAll() {
-        return super.getRepository().findAll();
+        return super.getRepository().findAll(Example.of(new CarAd()));
     }
 
     @Override
@@ -46,7 +47,7 @@ public class CarAdService extends AdWebfluxService<CarAd, CarAdDto> {
     public Mono<CarAd> save(CarAdDto entity) {
         return super.getAdMapper().carAdDtoToCarAd(entity)
                 .flatMap(carAd -> super.getRepository().save(carAd).doOnSuccess(carAd1 -> publisher.publishEvent(new AdCreatedEvent(carAd1))))
-                .switchIfEmpty(Mono.error(new Exception("Could not save Ad: " + entity)));
+                .switchIfEmpty(Mono.error(new Exception("Could not save CarAd: " + entity)));
     }
 
     @Override

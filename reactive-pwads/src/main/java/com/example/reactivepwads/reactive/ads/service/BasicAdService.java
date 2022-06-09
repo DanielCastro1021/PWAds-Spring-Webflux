@@ -9,6 +9,7 @@ import com.example.reactivepwads.reactive.ads.repository.AdReactiveRepository;
 import com.example.reactivepwads.reactive.ads.util.AdWebfluxService;
 import com.example.reactivepwads.security.repository.UserReactiveRepository;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Example;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -25,13 +26,16 @@ public class BasicAdService extends AdWebfluxService<BasicAd, BasicAdDto> {
 
     @Override
     public Flux<BasicAd> myAds() {
-        return ReactiveSecurityContextHolder.getContext().map(context -> context.getAuthentication().getPrincipal()).flatMap(userDetails -> getUserRepository().findByUsername(userDetails.toString())).flatMapMany(user -> super.getRepository().findByOwner(user.getUsername()));
+        return ReactiveSecurityContextHolder
+                .getContext().map(context -> context.getAuthentication().getPrincipal())
+                .flatMap(userDetails -> getUserRepository().findByUsername(userDetails.toString()))
+                .flatMapMany(user -> super.getRepository().findByOwner(user.getUsername()));
 
     }
 
     @Override
     public Flux<BasicAd> findAll() {
-        return super.getRepository().findAll();
+        return super.getRepository().findAll(Example.of(new BasicAd()));
     }
 
     @Override
@@ -48,12 +52,15 @@ public class BasicAdService extends AdWebfluxService<BasicAd, BasicAdDto> {
 
     @Override
     public Mono<BasicAd> update(BasicAdDto entity, String id) {
-        return ReactiveSecurityContextHolder.getContext().map(context -> context.getAuthentication().getPrincipal()).flatMap(userDetails -> getUserRepository().findByUsername(userDetails.toString())).flatMap(user -> super.getRepository().findByIdAndOwner(id, user.getUsername())).flatMap(basicAd -> super.getAdMapper().basicAdDtoToBasicAd(entity).flatMap(newBasicAd -> {
-            basicAd.setDescription(newBasicAd.getDescription());
-            basicAd.setTitle(newBasicAd.getTitle());
-            basicAd.setImageList(newBasicAd.getImageList());
-            return super.getRepository().save(basicAd);
-        })).switchIfEmpty(Mono.error(new Exception("User does not own the basic ad, with this id:" + id + " .")));
+        return ReactiveSecurityContextHolder.getContext().map(context -> context.getAuthentication().getPrincipal())
+                .flatMap(userDetails -> getUserRepository().findByUsername(userDetails.toString()))
+                .flatMap(user -> super.getRepository().findByIdAndOwner(id, user.getUsername()))
+                .flatMap(basicAd -> super.getAdMapper().basicAdDtoToBasicAd(entity).flatMap(newBasicAd -> {
+                    basicAd.setDescription(newBasicAd.getDescription());
+                    basicAd.setTitle(newBasicAd.getTitle());
+                    basicAd.setImageList(newBasicAd.getImageList());
+                    return super.getRepository().save(basicAd);
+                })).switchIfEmpty(Mono.error(new Exception("User does not own the basic ad, with this id:" + id + " .")));
     }
 
 
