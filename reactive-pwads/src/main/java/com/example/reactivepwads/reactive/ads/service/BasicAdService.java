@@ -46,7 +46,8 @@ public class BasicAdService extends AdWebfluxService<BasicAd, BasicAdDto> {
     @Override
     public Mono<BasicAd> save(BasicAdDto entity) {
         return super.getAdMapper().basicAdDtoToBasicAd(entity)
-                .flatMap(basicAd -> super.getRepository().save(basicAd).doOnSuccess(basicAd1 -> publisher.publishEvent(new AdCreatedEvent(basicAd1))))
+                .flatMap(basicAd -> super.getRepository().save(basicAd)
+                        .doOnSuccess(basicAd1 -> publisher.publishEvent(new AdCreatedEvent(basicAd1))))
                 .switchIfEmpty(Mono.error(new Exception("Could not save BasicAd: " + entity)));
     }
 

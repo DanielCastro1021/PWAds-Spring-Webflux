@@ -4,7 +4,6 @@ import com.example.reactivepwads.reactive.messages.event.MessageCreatedEvent;
 import com.example.reactivepwads.reactive.messages.event.MessageCreatedEventPublisher;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -16,16 +15,19 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Log
-@AllArgsConstructor
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class MessageWebSocketHandler implements WebSocketHandler {
     private final ObjectMapper objectMapper;
-    private final MessageCreatedEventPublisher eventPublisher;
+    Flux<MessageCreatedEvent> publish;
+
+    public MessageWebSocketHandler(ObjectMapper objectMapper, MessageCreatedEventPublisher eventPublisher) {
+        this.objectMapper = objectMapper;
+        this.publish = Flux.create(eventPublisher).share();
+    }
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        Flux<MessageCreatedEvent> publish = Flux.create(eventPublisher).share();
         Flux<WebSocketMessage> messageFlux = publish.map(evt -> {
             try {
                 return objectMapper.writeValueAsString(evt.getSource());
