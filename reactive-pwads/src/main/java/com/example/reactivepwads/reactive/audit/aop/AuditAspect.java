@@ -1,7 +1,7 @@
-package com.example.reactivepwads.audit;
+package com.example.reactivepwads.reactive.audit.aop;
 
-import com.example.reactivepwads.audit.model.AuditLog;
-import com.example.reactivepwads.audit.repository.AuditLogReactiveRepository;
+import com.example.reactivepwads.reactive.audit.model.AuditLog;
+import com.example.reactivepwads.reactive.audit.repository.AuditLogReactiveRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.aspectj.lang.ProceedingJoinPoint;

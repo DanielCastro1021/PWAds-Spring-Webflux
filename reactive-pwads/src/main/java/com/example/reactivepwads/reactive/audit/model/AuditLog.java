@@ -1,4 +1,4 @@
-package com.example.reactivepwads.audit.model;
+package com.example.reactivepwads.reactive.audit.model;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
