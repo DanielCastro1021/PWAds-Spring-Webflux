@@ -1,3 +1,4 @@
+
 if ('serviceWorker' in navigator) {
     //Try to install SW if not ready
     window.addEventListener('load', function () {

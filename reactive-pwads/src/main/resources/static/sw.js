@@ -1,5 +1,4 @@
 let CACHE_NAME = 'cache-v1';
-
 let staticAssets = [
     '/manifest.json',
     '/index.html',
@@ -54,6 +53,7 @@ self.addEventListener('activate', (event) => {
     );
 });
 
+
 self.addEventListener('fetch', (event) => {
     event.respondWith(caches.open(CACHE_NAME).then((cache) => {
         // Go to the network first
@@ -81,20 +81,17 @@ self.addEventListener('fetch', (event) => {
 });
 
 
-self.addEventListener('push', (event) => {
-    let payload = event.data ? event.data.text() : 'no payload';
-    payload = JSON.parse(payload);
-    let username = payload.notification.title;
-    let message = payload.notification.body;
-
-    // Customize notification here
-    const notificationTitle = 'PWAds - New message received';
-    const notificationOptions = {
-        body: `The user ${username} sent you the following message: ${message}`,
-        icon: '/icons/ios/100.png',
-    };
-
-    self.registration.showNotification(notificationTitle, notificationOptions);
+self.addEventListener('message', (event) => {
+    const sseURL = "http://localhost:8080/api/messages/received/sse";
+    let userSSE = sseURL + "/" + event.data;
+    const evtSource = new EventSource(userSSE);
+    let callback = (str) => {
+       postMessage(str);
+    }
+    evtSource.onmessage = function (e) {
+        alert(e.data);
+        callback(e.data)
+    }
 });
 
 

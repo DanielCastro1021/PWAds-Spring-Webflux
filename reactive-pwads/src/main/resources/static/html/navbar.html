@@ -135,7 +135,45 @@
         $('#my-ads-tab-button').hide();
     }
 
+    function requestPermission() {
+        Notification.requestPermission().then((permission) => {
+            if (permission === 'granted') {
+                console.log('Notification permission granted.');
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.ready
+                        .then(function (registration) {
+                            navigator.serviceWorker.addEventListener('message', (event) => {
+                                console.log(event.data);
+                                let payload = event.data;
+                                payload = JSON.parse(payload);
+                                let username = payload.from;
+                                let message = payload.message;
+                                // Customize notification here
+                                const notificationTitle = 'PWAds - New message received';
+                                const notificationOptions = {
+                                    body: `The user ${username} sent you the following message: ${message}`,
+                                    icon: '/icons/ios/100.png',
+                                };
+                                registration.showNotification(notificationTitle, notificationOptions);
+                            });
+
+                            if (localStorage.getItem('token') !== null) {
+                                const decode = JSON.parse(atob(token.split('.')[1]));
+                                registration.active.postMessage(decode.sub);
+                            }
+                        })
+                        .catch(function (err) {
+                            console.log('Service worker registration failed, error:', err);
+                        });
+                }
+            } else {
+                console.log('Unable to get permission to notify.');
+            }
+        });
+        // [END messaging_request_permission]
+    }
     checkToken(token);
+    requestPermission();
 </script>
 
 </body>
