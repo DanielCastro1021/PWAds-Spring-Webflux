@@ -11,7 +11,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 
 @Configuration
-
 public class MessageRouter {
     @Bean
     public RouterFunction<ServerResponse> routeMessage(MessageHandler handler) {
@@ -22,6 +21,7 @@ public class MessageRouter {
                 .andRoute(GET("/api/messages/{id}").and(accept(MediaType.APPLICATION_JSON)), handler::findById)
                 .andRoute(POST("/api/messages").and(accept(MediaType.APPLICATION_JSON)), handler::save)
                 .andRoute(PUT("/api/messages/{id}").and(accept(MediaType.APPLICATION_JSON)), handler::update)
-                .andRoute(DELETE("/api/messages/{id}").and(accept(MediaType.APPLICATION_JSON)), handler::delete);
+                .andRoute(DELETE("/api/messages/{id}").and(accept(MediaType.APPLICATION_JSON)), handler::delete)
+                .andRoute(GET("/api/messages/received/sse/{username}"), handler::getMessageStream);
     }
 }

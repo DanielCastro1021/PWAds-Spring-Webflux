@@ -6,11 +6,9 @@ import com.example.reactivepwads.reactive.messages.model.Message;
 import com.example.reactivepwads.reactive.messages.model.MessageDto;
 import com.example.reactivepwads.reactive.messages.repository.MessageReactiveRepository;
 import com.example.reactivepwads.reactive.messages.util.PersonalMessageService;
-import com.example.reactivepwads.reactive.messages.event.MessageCreatedEvent;
 import com.example.reactivepwads.reactive.util.WebfluxService;
 import com.example.reactivepwads.security.repository.UserReactiveRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -20,7 +18,6 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class MessageService implements WebfluxService<Message, MessageDto>, PersonalMessageService {
     private final MessageReactiveRepository repository;
-    private final ApplicationEventPublisher publisher;
     private final UserReactiveRepository userReactiveRepository;
     private final MessageMapper mapper;
 
@@ -46,7 +43,7 @@ public class MessageService implements WebfluxService<Message, MessageDto>, Pers
 
     @Override
     public Mono<Message> save(MessageDto entity) {
-        return mapper.messageDtoToMessage(entity).flatMap(repository::save).doOnSuccess(message -> publisher.publishEvent(new MessageCreatedEvent(message)));
+        return mapper.messageDtoToMessage(entity).flatMap(repository::save);
     }
 
     @Override

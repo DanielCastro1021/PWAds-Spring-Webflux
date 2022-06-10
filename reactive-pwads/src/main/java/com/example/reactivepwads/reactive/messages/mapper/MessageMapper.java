@@ -10,7 +10,6 @@ import com.example.reactivepwads.security.model.User;
 import com.example.reactivepwads.security.repository.UserReactiveRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -23,7 +22,7 @@ public class MessageMapper {
 
     public Mono<Message> messageDtoToMessage(MessageDto dto) {
         if (dto.getTo() == null || dto.getTo().isEmpty())
-            throw new UserNotFoundException(dto.getTo()); //FIXME: Message Build Error Exception
+            return Mono.error(new UserNotFoundException(dto.getTo())); //FIXME: Message Build Error Exception
         else {
             Mono<User> monoRequestUser = ReactiveSecurityContextHolder.getContext().map(context -> context.getAuthentication().getPrincipal()).flatMap(userDetails -> userRepository.findByUsername(userDetails.toString()));
             Mono<User> monoToUser = userRepository.findByUsername(dto.getTo());
