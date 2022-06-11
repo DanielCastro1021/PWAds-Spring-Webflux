@@ -81,17 +81,4 @@ self.addEventListener('fetch', (event) => {
 });
 
 
-self.addEventListener('message', (event) => {
-    const sseURL = "http://localhost:8080/api/messages/received/sse";
-    let userSSE = sseURL + "/" + event.data;
-    const evtSource = new EventSource(userSSE);
-    let callback = (str) => {
-       postMessage(str);
-    }
-    evtSource.onmessage = function (e) {
-        alert(e.data);
-        callback(e.data)
-    }
-});
-
 
