@@ -22,9 +22,7 @@ public class AdHandler implements AdWebfluxHandler {
     @Override
     @PreAuthorize("hasRole('USER')" + "|| hasRole('ADMIN')")
     public Mono<ServerResponse> myAds(ServerRequest request) {
-        return ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(adService.myAds(), Ad.class);
+        return ok().contentType(MediaType.APPLICATION_JSON).body(adService.myAds(), Ad.class);
     }
 
     @Override
