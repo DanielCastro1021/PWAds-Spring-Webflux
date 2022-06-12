@@ -1,7 +1,7 @@
-package com.example.reactivepwads.reactive.audit.aop;
+package com.example.reactivepwads.audit.aop;
 
-import com.example.reactivepwads.reactive.audit.model.AuditLog;
-import com.example.reactivepwads.reactive.audit.repository.AuditLogReactiveRepository;
+import com.example.reactivepwads.audit.model.AuditLog;
+import com.example.reactivepwads.audit.repository.AuditLogReactiveRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,8 +43,9 @@ public class AuditAspect {
                 String api_method = proceedingJoinPoint.getSignature().getName();
                 String api_full_name = api_class + "." + api_method;
                 long elapsedTime = end - start;
-                Mono.just(new AuditLog(request_protocol, http_method, uri, api_class, api_method, api_full_name, elapsedTime)).flatMap(repository::save).subscribe();
-
+                repository.save(new AuditLog(request_protocol, http_method, uri, api_class, api_method, api_full_name, elapsedTime))
+                        .subscribeOn(Schedulers.boundedElastic())
+                        .subscribe();
             });
         } catch (Throwable e) {
             e.printStackTrace();
