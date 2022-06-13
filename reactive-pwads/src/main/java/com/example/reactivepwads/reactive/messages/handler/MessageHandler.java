@@ -4,6 +4,7 @@ import com.example.reactivepwads.reactive.ads.model.ad.Ad;
 import com.example.reactivepwads.reactive.messages.model.Message;
 import com.example.reactivepwads.reactive.messages.model.MessageDto;
 import com.example.reactivepwads.reactive.messages.service.MessageService;
+import com.example.reactivepwads.reactive.util.WebfluxHandler;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.MediaType;
@@ -20,7 +21,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 @Component
 @AllArgsConstructor
 @Log
-public class MessageHandler implements MessageWebfluxHandler {
+public class MessageHandler implements WebfluxHandler, MessageWebfluxHandler {
 
     private final MessageService messageService;
     private final Sinks.Many<Message> messageFluxSink = Sinks.many().replay().all();
