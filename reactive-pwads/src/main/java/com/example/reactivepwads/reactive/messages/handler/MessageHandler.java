@@ -55,10 +55,7 @@ public class MessageHandler implements WebfluxHandler, MessageWebfluxHandler {
     @PreAuthorize("hasRole('USER')" + "|| hasRole('ADMIN')")
     public Mono<ServerResponse> save(ServerRequest request) {
         final Mono<MessageDto> dto = request.bodyToMono(MessageDto.class);
-        return ok().contentType(MediaType.APPLICATION_JSON).body(fromPublisher(dto.flatMap(messageService::save).doOnSuccess(message -> {
-            log.info(message.toString());
-            messageFluxSink.tryEmitNext(message);
-        }), Message.class)).switchIfEmpty(Mono.error(new Exception("Something went wrong in MessageService.save method.")));
+        return ok().contentType(MediaType.APPLICATION_JSON).body(fromPublisher(dto.flatMap(messageService::save).doOnSuccess(messageFluxSink::tryEmitNext), Message.class)).switchIfEmpty(Mono.error(new Exception("Something went wrong in MessageService.save method.")));
     }
 
     @Override
