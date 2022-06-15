@@ -24,7 +24,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 public class MessageHandler implements WebfluxHandler, MessageWebfluxHandler {
 
     private final MessageService messageService;
-    private final Sinks.Many<Message> messageFluxSink = Sinks.many().replay().all();
+    private final Sinks.Many<Message> messageFluxSink = Sinks.many().replay().latest();
 
     @Override
     @PreAuthorize("hasRole('USER')" + "|| hasRole('ADMIN')")

@@ -124,36 +124,50 @@
             let userSSE = sseURL + "/" + decode.sub;
             const evtSource = new EventSource(userSSE);
             evtSource.onmessage = function (event) {
-                let payload = event.data || 'no payload';
-                payload = JSON.parse(payload);
-                let username = payload.from;
-                let message = payload.message;
-
-                // Customize notification here
-                const notificationTitle = 'PWAds - New message received';
-                const notificationOptions = {
-                    body: `The user ${username} sent you the following message: ${message}`,
-                    icon: '/icons/ios/100.png',
-                };
-
-                Notification.requestPermission().then((permission) => {
-                    if (permission === 'granted') {
-                        console.log('Notification permission granted.');
-                        if ('serviceWorker' in navigator) {
-                            navigator.serviceWorker.ready
-                                .then(function (registration) {
-                                    registration.showNotification(notificationTitle, notificationOptions);
-                                })
-                                .catch(function (err) {
-                                    console.log('Service worker registration failed, error:', err);
-                                });
-                        }
-                    } else {
-                        console.log('Unable to get permission to notify.');
-                    }
-                });
+                let latestNotification = localStorage.getItem('latestNotification');
+                if (latestNotification === null || latestNotification === undefined || !JSON.stringify(latestNotification) === event.data) {
+                    console.log("New notification.")
+                    console.log(latestNotification)
+                    console.log(event.data)
+                    localStorage.setItem('latestNotification',event.data);
+                    latestNotification = localStorage.getItem('latestNotification');
+                    createNotification(latestNotification);
+                } else {
+                    console.log("Old notification.")
+                    console.log(latestNotification)
+                    console.log(event.data)
+                }
             }
         }
+    }
+
+    function createNotification(notification) {
+        let username = notification.from;
+        let message = notification.message;
+
+        // Customize notification here
+        const notificationTitle = 'PWAds - New message received';
+        const notificationOptions = {
+            body: `The user ${username} sent you the following message: ${message}`,
+            icon: '/icons/ios/100.png',
+        };
+
+        Notification.requestPermission().then((permission) => {
+            if (permission === 'granted') {
+                console.log('Notification permission granted.');
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.ready
+                        .then(function (registration) {
+                            registration.showNotification(notificationTitle, notificationOptions);
+                        })
+                        .catch(function (err) {
+                            console.log('Service worker registration failed, error:', err);
+                        });
+                }
+            } else {
+                console.log('Unable to get permission to notify.');
+            }
+        });
     }
 
     function logout() {
