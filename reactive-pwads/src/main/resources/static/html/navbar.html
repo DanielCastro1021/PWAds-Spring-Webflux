@@ -124,19 +124,9 @@
             let userSSE = sseURL + "/" + decode.sub;
             const evtSource = new EventSource(userSSE);
             evtSource.onmessage = function (event) {
-                let latestNotification = localStorage.getItem('latestNotification');
-                if (latestNotification === null || latestNotification === undefined || !JSON.stringify(latestNotification) === event.data) {
-                    console.log("New notification.")
-                    console.log(latestNotification)
-                    console.log(event.data)
-                    localStorage.setItem('latestNotification',event.data);
-                    latestNotification = localStorage.getItem('latestNotification');
-                    createNotification(latestNotification);
-                } else {
-                    console.log("Old notification.")
-                    console.log(latestNotification)
-                    console.log(event.data)
-                }
+                let payload = event.data || 'no payload';
+                payload = JSON.parse(payload);
+                createNotification(payload);
             }
         }
     }
