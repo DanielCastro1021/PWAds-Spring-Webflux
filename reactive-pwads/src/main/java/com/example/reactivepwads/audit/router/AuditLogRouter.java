@@ -14,7 +14,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @Configuration
 public class AuditLogRouter {
     @Bean
-    public RouterFunction<ServerResponse> routeAd(AuditLogHandler handler) {
+    public RouterFunction<ServerResponse> routeAuditLog(AuditLogHandler handler) {
         return RouterFunctions
                 .route(GET("/api/audit").and(accept(MediaType.APPLICATION_JSON)), handler::findAll);
     }

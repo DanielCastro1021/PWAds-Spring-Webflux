@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AdWebSocketHandler implements WebSocketHandler {
     private final ObjectMapper objectMapper;
-    private Flux<AdCreatedEvent> publish;
+    private final Flux<AdCreatedEvent> publish;
 
     public AdWebSocketHandler(ObjectMapper objectMapper, AdCreatedEventPublisher eventPublisher) {
         this.objectMapper = objectMapper;
